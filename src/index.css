@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+.default-width{
+  max-width: 1420px;
+  margin: auto;
+}
