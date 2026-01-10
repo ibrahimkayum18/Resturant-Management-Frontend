@@ -1,9 +1,10 @@
+import AutoSlideBanner from "../../../components/AutoSlideBanner";
 
 
 const Home = () => {
     return (
-        <div>
-            <p>Home page</p>
+        <div className="">
+            <AutoSlideBanner />
         </div>
     );
 };

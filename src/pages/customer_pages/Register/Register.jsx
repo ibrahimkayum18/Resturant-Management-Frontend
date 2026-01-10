@@ -5,6 +5,7 @@ import { updateProfile } from "firebase/auth";
 import { auth } from "../../../../firebase.config";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Register = () => {
 
@@ -38,12 +39,20 @@ const Register = () => {
         updateProfile(auth.currentUser, {
           displayName: name
         })
-        .then(() => {
-          toast.success("User Created Successfully");
-          logOut();
-          navigate("/login");
-        })
-          .catch((err) => toast.error(err.message));
+        .then(async () => {
+
+          const userInfo = {
+        name,
+        email,
+      };
+
+      const res = await axios.post("http://localhost:5000/users", userInfo);
+      if (res.data.success) {
+        toast.success("User Created Successfully");
+        logOut();
+        navigate("/login");
+      }
+      }).catch((err) => toast.error(err.message));
       })
       .catch((err) => toast.error(err.message));
 

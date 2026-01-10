@@ -5,6 +5,8 @@ import About from "../pages/regular_pages/About/About";
 import Contact from "../pages/regular_pages/Contact/Contact";
 import LogIn from "../pages/customer_pages/LogIn/LogIn";
 import Register from "../pages/customer_pages/Register/Register";
+import PrivateRouter from "./PrivateRoute";
+import Menu from "../pages/regular_pages/Menus/Menu";
 
 const Route = createBrowserRouter([
   {
@@ -14,6 +16,10 @@ const Route = createBrowserRouter([
         {
             path: '/',
             element: <Home />
+        },
+        {
+            path: '/menu',
+            element: <PrivateRouter><Menu /></PrivateRouter>
         },
         {
             path: '/about',

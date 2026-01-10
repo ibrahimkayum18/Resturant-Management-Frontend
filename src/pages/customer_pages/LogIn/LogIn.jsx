@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../../Routes/AuthProvider";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const LogIn = () => {
   const { login } = useContext(AuthContext);
@@ -19,26 +20,27 @@ const LogIn = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const {email,password } = formData;
+const handleSubmit = (e) => {
+  e.preventDefault();
 
+  const { email, password } = formData;
 
-    login(email, password)
-      .then(() => {
-        toast.success("Logged In Successfully");
-        navigate(location?.state ? location.state : "/");
+  login(email, password)
+    .then(async (result) => {
+      // 🔹 Call backend to update last login activity
+      await axios.post("http://localhost:5000/users", {
+        email,
+        name: result.user?.displayName || "Customer",
+      });
 
-        // if (user) {
-        //   axiosPublic.post("/users", user).then((res) => {
-        //     if (res.data.success) {
-        //       navigate(location?.state ? location.state : "/");
-        //     }
-        //   });
-        // }
-      })
-      .catch((error) => console.log(error));
-  };
+      toast.success("Logged In Successfully");
+      navigate(location?.state ? location.state : "/");
+    })
+    .catch((error) => {
+      console.error(error);
+      toast.error(error.message);
+    });
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
