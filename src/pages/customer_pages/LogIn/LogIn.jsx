@@ -1,7 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { AuthContext } from "../../../Routes/AuthProvider";
+import toast from "react-hot-toast";
 
 const LogIn = () => {
+const [user, setUser] = useState([]);
+  const { login, googleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,7 +22,24 @@ const LogIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
+    const {email,password } = formData;
+
+
+    login(email, password)
+      .then((res) => {
+        setUser(res.data);
+        toast.success("Logged In Successfully");
+        navigate(location?.state ? location.state : "/");
+
+        // if (user) {
+        //   axiosPublic.post("/users", user).then((res) => {
+        //     if (res.data.success) {
+        //       navigate(location?.state ? location.state : "/");
+        //     }
+        //   });
+        // }
+      })
+      .catch((error) => console.log(error));
   };
 
   return (

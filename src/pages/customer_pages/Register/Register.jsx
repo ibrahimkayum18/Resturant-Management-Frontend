@@ -1,7 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router";
+import { AuthContext } from "../../../Routes/AuthProvider";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../../../../firebase.config";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const Register = () => {
+
+  const { createUser, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,10 +27,28 @@ const Register = () => {
     });
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Registration Data:", formData);
+    // console.log("Registration Data:", formData);
+    const {email,password, name } = formData;
+
+     createUser(email, password)
+      .then(() => {
+        updateProfile(auth.currentUser, {
+          displayName: name
+        })
+        .then(() => {
+          toast.success("User Created Successfully");
+          logOut();
+          navigate("/login");
+        })
+          .catch((err) => toast.error(err.message));
+      })
+      .catch((err) => toast.error(err.message));
+
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
