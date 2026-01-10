@@ -1,24 +1,39 @@
-import { NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import menuData from "../assets/main_menu.json";
 import logo from "./../assets/logo.png";
 import { MdOutlineAccountCircle } from "react-icons/md";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { IoMenuOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
+import { AuthContext } from "../Routes/AuthProvider";
+import toast from "react-hot-toast";
 
 const NavBar = () => {
   const [menuStatus, setMenuStatus] = useState(false);
   const navigate = useNavigate();
+  const { logOut, user } = useContext(AuthContext);
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        toast.success("Sign out successful");
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
 
   const navLinks = (
     <>
       {menuData.map((menu) => (
-        <li key={menu.path} className="text-xl">
+        <li key={`${menu.path}-${menu.name}`} className="text-xl">
           <NavLink
             to={menu.path}
-            onClick={() => setMenuStatus(false)} // auto close on click
+            onClick={() => setMenuStatus(false)}
             className={({ isActive }) =>
-              isActive ? "text-[#8F0000] font-semibold" : "font-semibold"
+              isActive
+                ? "text-[#8F0000] font-semibold"
+                : "font-semibold"
             }
           >
             {menu.name}
@@ -36,7 +51,7 @@ const NavBar = () => {
           {/* MOBILE MENU ICON */}
           <div className="md:hidden text-2xl cursor-pointer">
             {menuStatus ? (
-              <RxCross1 onClick={() => setMenuStatus(false)} className=""/>
+              <RxCross1 onClick={() => setMenuStatus(false)} />
             ) : (
               <IoMenuOutline onClick={() => setMenuStatus(true)} />
             )}
@@ -52,21 +67,36 @@ const NavBar = () => {
         </div>
 
         {/* DESKTOP MENU */}
-        <ul className="hidden md:flex gap-6 ">{navLinks}</ul>
+        <ul className="hidden md:flex gap-6">{navLinks}</ul>
 
-        {/* ACCOUNT ICON */}
+        {/* ACCOUNT DROPDOWN */}
         <div className="sm:text-2xl md:text-3xl cursor-pointer">
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className=""><MdOutlineAccountCircle /></div>
-            <ul tabIndex="-1" className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-              <li><a>Account</a></li>
-              <li><a>Dashboard</a></li>
-              <li><a>Login</a></li>
-              <li><a>Register</a></li>
-              <li><a>Sign Out</a></li>
-            </ul>
+            <div tabIndex={0} role="button">
+              <MdOutlineAccountCircle />
+            </div>
+
+            {user ? (
+              <ul
+                tabIndex={-1}
+                className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
+              >
+                <li><a>Account</a></li>
+                <li><a>Dashboard</a></li>
+                <li>
+                  <button onClick={handleLogOut}>Sign Out</button>
+                </li>
+              </ul>
+            ) : (
+              <ul
+                tabIndex={-1}
+                className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
+              >
+                <li><Link to="/login">Login</Link></li>
+                <li><Link to="/register">Register</Link></li>
+              </ul>
+            )}
           </div>
-          
         </div>
       </div>
 
@@ -85,7 +115,7 @@ const NavBar = () => {
         <div
           className="fixed inset-0 bg-black/40 z-40"
           onClick={() => setMenuStatus(false)}
-        ></div>
+        />
       )}
     </div>
   );
