@@ -4,8 +4,7 @@ import { AuthContext } from "../../../Routes/AuthProvider";
 import toast from "react-hot-toast";
 
 const LogIn = () => {
-const [user, setUser] = useState([]);
-  const { login, googleLogin } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -26,8 +25,7 @@ const [user, setUser] = useState([]);
 
 
     login(email, password)
-      .then((res) => {
-        setUser(res.data);
+      .then(() => {
         toast.success("Logged In Successfully");
         navigate(location?.state ? location.state : "/");
 
