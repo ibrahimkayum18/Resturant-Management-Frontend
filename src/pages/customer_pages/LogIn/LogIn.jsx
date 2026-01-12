@@ -24,6 +24,7 @@ const handleSubmit = (e) => {
   e.preventDefault();
 
   const { email, password } = formData;
+  console.log(formData)
 
   login(email, password)
     .then(async (result) => {

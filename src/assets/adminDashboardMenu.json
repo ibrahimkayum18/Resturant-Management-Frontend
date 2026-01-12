@@ -1,0 +1,42 @@
+[
+  {
+    "label": "Overview",
+    "icon": "layout-dashboard",
+    "path": "/dashboard"
+  },
+  {
+    "label": "Add Product",
+    "icon": "plus-square",
+    "path": "/dashboard/add_products"
+  },
+  {
+    "label": "All Customers",
+    "icon": "users",
+    "path": "/dashboard/all_customers"
+  },
+  {
+    "label": "All Products",
+    "icon": "box",
+    "path": "/dashboard/all_products"
+  },
+  {
+    "label": "Customer Messages",
+    "icon": "mail",
+    "path": "/dashboard/customer_message"
+  },
+  {
+    "label": "Orders",
+    "icon": "shopping-cart",
+    "path": "/dashboard/all_orders"
+  },
+  {
+    "label": "Subscribers",
+    "icon": "bell",
+    "path": "/dashboard/subscribers"
+  },
+  {
+    "label": "Users",
+    "icon": "user-cog",
+    "path": "/dashboard/users"
+  }
+]

@@ -58,12 +58,15 @@ const NavBar = () => {
           </div>
 
           {/* LOGO */}
-          <img
-            src={logo}
-            alt="logo"
-            className="w-28 md:w-40 cursor-pointer"
-            onClick={() => navigate("/")}
-          />
+          <Link to={'/'}>
+            <img
+              src={logo}
+              alt="logo"
+              className="w-28 md:w-40 cursor-pointer"
+              onClick={() => navigate("/")}
+            />
+          </Link>
+          
         </div>
 
         {/* DESKTOP MENU */}
@@ -82,7 +85,7 @@ const NavBar = () => {
                 className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
               >
                 <li><a>Account</a></li>
-                <li><a>Dashboard</a></li>
+                <li><Link to={'/dashboard'}>Dashboard</Link></li>
                 <li>
                   <button onClick={handleLogOut}>Sign Out</button>
                 </li>

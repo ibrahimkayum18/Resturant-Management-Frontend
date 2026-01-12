@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useContext } from "react";
 import { AuthContext } from "./AuthProvider";
 import Loading from "../components/Loading";
-import { useLocation } from "react-router";
+import { Navigate, useLocation } from "react-router";
 
 const PrivateRouter = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
