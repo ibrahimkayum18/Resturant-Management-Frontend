@@ -51,7 +51,7 @@ const Contact = () => {
   return (
     <section className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-xl bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+        <h2 className="text-2xl font-semibold text-black mb-6 text-center">
           Contact Us
         </h2>
 
@@ -76,7 +76,7 @@ const Contact = () => {
               value={formData.firstName}
               onChange={handleChange}
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
             />
 
             <input
@@ -86,7 +86,7 @@ const Contact = () => {
               value={formData.lastName}
               onChange={handleChange}
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
             />
           </div>
 
@@ -97,7 +97,7 @@ const Contact = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
 
           <textarea
@@ -107,7 +107,7 @@ const Contact = () => {
             value={formData.message}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
 
           <button
