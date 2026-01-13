@@ -7,6 +7,7 @@ import { IoMenuOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import { AuthContext } from "../Routes/AuthProvider";
 import toast from "react-hot-toast";
+import { BsCart3 } from "react-icons/bs";
 
 const NavBar = () => {
   const [menuStatus, setMenuStatus] = useState(false);
@@ -73,7 +74,7 @@ const NavBar = () => {
         <ul className="hidden md:flex gap-6">{navLinks}</ul>
 
         {/* ACCOUNT DROPDOWN */}
-        <div className="sm:text-2xl md:text-3xl cursor-pointer">
+        <div className="sm:text-2xl md:text-3xl cursor-pointer flex gap-3">
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button">
               <MdOutlineAccountCircle />
@@ -100,6 +101,10 @@ const NavBar = () => {
               </ul>
             )}
           </div>
+          <div className="dropdown dropdown-end">
+            <BsCart3 />
+          </div>
+
         </div>
       </div>
 

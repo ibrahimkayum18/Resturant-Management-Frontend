@@ -1,26 +1,24 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import AllCustomer from "../../../components/dashboardComponent/AllCustomer";
+import TotalSaleChart from "../../../components/dashboardComponent/TotalSaleChart";
+
 
 
 
 
 const Overview = () => {
-  const [storeUser, setStoreUser] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/users")
-      .then((res) => {
-        setStoreUser(res.data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, []);
 
     return (
         <div>
-            {storeUser.length}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="col-span-1">
+                    <TotalSaleChart />
+                </div>
+                <div className="col-span-2">
+                    <AllCustomer />
+                </div>
+                
+            </div>
         </div>
     );
 };

@@ -1,0 +1,142 @@
+[
+  {
+    "_id": "ORD-1001",
+    "customer": {
+      "userId": "6962c49dd91ab9d47930e23c",
+      "name": "Kayum",
+      "email": "ik@ik.com"
+    },
+    "items": [
+      {
+        "productId": "PROD-501",
+        "productName": "Natural Straight Wig",
+        "quantity": 1,
+        "price": 3500,
+        "total": 3500
+      }
+    ],
+    "pricing": {
+      "subTotal": 3500,
+      "shipping": 200,
+      "grandTotal": 3700
+    },
+    "payment": {
+      "method": "SSLCommerz",
+      "status": "paid"
+    },
+    "orderStatus": "delivered",
+    "createdAt": "2026-01-10T11:20:00.000Z"
+  },
+  {
+    "_id": "ORD-1002",
+    "customer": {
+      "userId": "69655f8c6dd2a4424e2c51c6",
+      "name": "Guest User",
+      "email": "guest@gmail.com"
+    },
+    "items": [
+      {
+        "productId": "PROD-502",
+        "productName": "Curly Lace Wig",
+        "quantity": 2,
+        "price": 4500,
+        "total": 9000
+      }
+    ],
+    "pricing": {
+      "subTotal": 9000,
+      "shipping": 200,
+      "grandTotal": 9200
+    },
+    "payment": {
+      "method": "COD",
+      "status": "pending"
+    },
+    "orderStatus": "processing",
+    "createdAt": "2026-01-11T09:15:00.000Z"
+  },
+  {
+    "_id": "ORD-1003",
+    "customer": {
+      "userId": "6962c49dd91ab9d47930e23c",
+      "name": "S M Ibrahim Kayum",
+      "email": "smibrahimkayum@gmail.com"
+    },
+    "items": [
+      {
+        "productId": "PROD-503",
+        "productName": "Body Wave Wig",
+        "quantity": 1,
+        "price": 5200,
+        "total": 5200
+      }
+    ],
+    "pricing": {
+      "subTotal": 5200,
+      "shipping": 200,
+      "grandTotal": 5400
+    },
+    "payment": {
+      "method": "SSLCommerz",
+      "status": "paid"
+    },
+    "orderStatus": "processing",
+    "createdAt": "2026-01-12T14:45:00.000Z"
+  },
+  {
+    "_id": "ORD-1004",
+    "customer": {
+      "userId": "69655f8c6dd2a4424e2c51c6",
+      "name": "Guest User",
+      "email": "guest2@gmail.com"
+    },
+    "items": [
+      {
+        "productId": "PROD-504",
+        "productName": "Deep Curly Wig",
+        "quantity": 3,
+        "price": 4000,
+        "total": 12000
+      }
+    ],
+    "pricing": {
+      "subTotal": 12000,
+      "shipping": 300,
+      "grandTotal": 12300
+    },
+    "payment": {
+      "method": "COD",
+      "status": "pending"
+    },
+    "orderStatus": "pending",
+    "createdAt": "2026-01-13T08:10:00.000Z"
+  },
+  {
+    "_id": "ORD-1005",
+    "customer": {
+      "userId": "6962c49dd91ab9d47930e23c",
+      "name": "Kayum",
+      "email": "ik@ik.com"
+    },
+    "items": [
+      {
+        "productId": "PROD-505",
+        "productName": "Water Wave Wig",
+        "quantity": 2,
+        "price": 4800,
+        "total": 9600
+      }
+    ],
+    "pricing": {
+      "subTotal": 9600,
+      "shipping": 200,
+      "grandTotal": 9800
+    },
+    "payment": {
+      "method": "SSLCommerz",
+      "status": "paid"
+    },
+    "orderStatus": "delivered",
+    "createdAt": "2026-01-13T15:30:00.000Z"
+  }
+]
