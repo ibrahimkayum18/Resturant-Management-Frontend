@@ -96,7 +96,7 @@ const Dashboard = () => {
           </header>
 
           {/* CONTENT */}
-          <main className="flex-1 p-6 bg-[#f5f5f5]">
+          <main className="flex-1 md:p-6 bg-[#f5f5f5]">
             <div className=" mx-auto">
               <Outlet />
             </div>
