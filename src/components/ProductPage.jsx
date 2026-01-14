@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const ProductPage = () => {
   const product = useLoaderData();
@@ -37,10 +38,10 @@ const ProductPage = () => {
         variants: selectedVariants,
       });
 
-      alert("Item added to cart ✅");
+      toast.success("Item added to cart");
     } catch (error) {
       console.error(error);
-      alert("Failed to add to cart ❌");
+      toast.error("Failed to add to cart");
     } finally {
       setLoading(false);
     }

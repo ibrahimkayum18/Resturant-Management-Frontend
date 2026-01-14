@@ -1,9 +1,13 @@
 import axios from "axios";
+import { use } from "react";
 import { Link } from "react-router";
+import { AuthContext } from "../Routes/AuthProvider";
+import toast from "react-hot-toast";
 
 const ProductCard = ({item, loadingId, setLoadingId}) => {
 
-    console.log(item.title)
+  const {user} = use(AuthContext);
+
 
   const handleAddToCart = async () => {
   try {
@@ -15,12 +19,15 @@ const ProductCard = ({item, loadingId, setLoadingId}) => {
       price: Number(item.basePrice),
       image: item.images?.[0],
       quantity: 1,
+      customerEmail: user.email,
+      customerName: user.displayName,
+      createdAt: new Date()
     });
 
-    alert("Item added to cart ✅");
+    toast.success("Item added to cart ✅");
   } catch (error) {
     console.error(error);
-    alert("Failed to add to cart ❌");
+    toast.error("Failed to add to cart ❌");
   } finally {
     setLoadingId(null);
   }
