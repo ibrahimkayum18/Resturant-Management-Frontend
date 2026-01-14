@@ -19,6 +19,7 @@ import Subscribers from "../pages/admin_pages/Subscribers/Subscribers";
 import Users from "../pages/admin_pages/Users/Users";
 import UpdateFood from "../pages/admin_pages/UpdatFoodMenu/UpdateFood";
 import ProductPage from "../components/ProductPage";
+import Cart from "../pages/regular_pages/Cart/Cart";
 
 const Route = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const Route = createBrowserRouter([
       { path: "contact", element: <Contact /> },
       { path: "login", element: <LogIn /> },
       { path: "register", element: <Register /> },
+      { path: "cart", element: <Cart /> },
       { path: "/food-menu/:id", loader: ({params}) => fetch(`http://localhost:5000/food-menu/${params.id}`) ,element: <ProductPage /> },
     ]
   },

@@ -101,8 +101,10 @@ const NavBar = () => {
               </ul>
             )}
           </div>
-          <div className="dropdown dropdown-end">
-            <BsCart3 />
+          <div className="">
+            <Link to={'/cart'}>
+              <BsCart3 />
+            </Link>
           </div>
 
         </div>
