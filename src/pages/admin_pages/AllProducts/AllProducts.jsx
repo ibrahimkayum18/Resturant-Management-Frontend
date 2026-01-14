@@ -1,25 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-/**
- * AllProducts Component
- * Displays all food products and provides options
- * to update or delete a product
- */
 const AllProducts = () => {
-  /**
-   * State to store all products
-   */
   const [products, setProducts] = useState([]);
-
-  /**
-   * State to manage loading
-   */
   const [loading, setLoading] = useState(true);
 
-  /**
-   * Fetch all products from backend
-   */
+  // UI states
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:5000/food-menu");
@@ -31,115 +21,222 @@ const AllProducts = () => {
     }
   };
 
-  /**
-   * Delete a product by ID
-   * @param {string} id
-   */
   const handleDeleteProduct = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`http://localhost:5000/food-menu/${id}`);
-      fetchProducts();
-    } catch (error) {
-      console.error("Failed to delete product", error.message);
-    }
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    await axios.delete(`http://localhost:5000/food-menu/${id}`);
+    fetchProducts();
   };
 
-  /**
-   * Redirect to update product page
-   * @param {string} id
-   */
   const handleUpdateProduct = (id) => {
-    // You can replace this with navigate() if using react-router
     window.location.href = `/dashboard/update-product/${id}`;
   };
 
-  /**
-   * Fetch products when component mounts
-   */
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  // 🔴🟢 Status badge
+  const StatusBadge = ({ status }) => {
+    const isAvailable = status === "available";
+
+    return (
+      <div className="flex items-center gap-2 capitalize">
+        <span
+          className={`w-2.5 h-2.5 rounded-full ${
+            isAvailable ? "bg-green-700" : "bg-red-700"
+          }`}
+        />
+        <span className="text-sm">{status || "N/A"}</span>
+      </div>
+    );
+  };
+
+  // 🔍 Filters
+  const filteredProducts = products.filter((p) => {
+    const matchesSearch = p.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const matchesCategory =
+      categoryFilter === "all" || p.category === categoryFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || p.status === statusFilter;
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  // Unique categories
+  const categories = [
+    ...new Set(products.map((p) => p.category)),
+  ];
+
   if (loading) {
-    return <div className="p-6 text-black">Loading products...</div>;
+    return (
+      <div className="p-6 text-center font-semibold">
+        Loading products...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 text-black">
-      <h2 className="text-2xl font-semibold mb-6">All Products</h2>
+    <div className="p-4 md:p-6 max-w-7xl mx-auto text-slate-800">
+      <h2 className="text-3xl font-bold mb-4 ">
+        All Products
+      </h2>
 
-      <div className="overflow-x-auto border rounded-lg">
-        <table className="min-w-full border-collapse">
-          <thead className="bg-gray-100">
+      {/* 🔍 SEARCH + FILTER BAR */}
+      <div className="sticky top-0 z-20 bg-white mb-5">
+        <div className="flex flex-wrap md:flex-nowrap gap-3 items-center p-3 border border-gray-300 rounded-xl shadow-sm">
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search food by name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 min-w-[200px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none  "
+          />
+
+          {/* Category */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 min-w-[150px]"
+          >
+            <option value="all">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+
+          {/* Status */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 min-w-[140px]"
+          >
+            <option value="all">All Status</option>
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </div>
+      </div>
+
+      {/* ================= DESKTOP TABLE ================= */}
+      <div className="hidden md:block bg-white rounded-xl shadow overflow-hidden">
+        <table className="min-w-full">
+          <thead className="bg-orange-50">
             <tr>
-              <th className="border px-4 py-2 text-left">Image</th>
-              <th className="border px-4 py-2 text-left">Title</th>
-              <th className="border px-4 py-2 text-left">Category</th>
-              <th className="border px-4 py-2 text-left">Price</th>
-              <th className="border px-4 py-2 text-left">Status</th>
-              <th className="border px-4 py-2 text-center">Actions</th>
+              <th className="px-4 py-3 text-left">Image</th>
+              <th className="px-4 py-3 text-left">Title</th>
+              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {products.map((product) => (
-              <tr key={product._id} className="hover:bg-gray-50">
-                <td className="border px-4 py-2">
+            {filteredProducts.map((product) => (
+              <tr
+                key={product._id}
+                className="border-t hover:bg-orange-50/40"
+              >
+                <td className="px-4 py-3">
                   <img
                     src={product.images?.[0]}
                     alt={product.title}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-14 h-14 object-cover rounded-lg"
                   />
                 </td>
 
-                <td className="border px-4 py-2 font-medium">
+                <td className="px-4 py-3 font-semibold">
                   {product.title}
                 </td>
 
-                <td className="border px-4 py-2">
+                <td className="px-4 py-3">
                   {product.category}
                 </td>
 
-                <td className="border px-4 py-2">
-                  ৳ {product.basePrice}
+                <td className="px-4 py-3 font-medium">
+                  ৳ {Number(product.basePrice).toFixed(2)}
                 </td>
 
-                <td className="border px-4 py-2 capitalize">
-                  {product.status}
+                <td className="px-4 py-3">
+                  <StatusBadge status={product.status} />
                 </td>
 
-                <td className="border px-4 py-2 text-center space-x-2">
+                <td className="px-4 py-3 text-center space-x-2">
                   <button
                     onClick={() => handleUpdateProduct(product._id)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                    className="bg-orange-500 text-white px-3 py-1.5 rounded hover:bg-orange-600"
                   >
                     Update
                   </button>
 
                   <button
                     onClick={() => handleDeleteProduct(product._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="bg-red-500 text-white px-3 py-1.5 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
                 </td>
               </tr>
             ))}
-
-            {products.length === 0 && (
-              <tr>
-                <td colSpan="6" className="text-center py-6">
-                  No products found
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
+      </div>
+
+      {/* ================= MOBILE LIST ================= */}
+      <div className="md:hidden bg-white rounded-xl shadow divide-y">
+        {filteredProducts.map((product) => (
+          <div
+            key={product._id}
+            className="p-4 flex gap-4 items-center"
+          >
+            <img
+              src={product.images?.[0]}
+              alt={product.title}
+              className="w-16 h-16 rounded-lg object-cover"
+            />
+
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold truncate">
+                {product.title}
+              </p>
+              <p className="text-sm text-gray-500">
+                {product.category}
+              </p>
+              <p className="font-medium">
+                ৳ {Number(product.basePrice).toFixed(2)}
+              </p>
+              <StatusBadge status={product.status} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => handleUpdateProduct(product._id)}
+                className="text-orange-600 text-sm font-semibold"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteProduct(product._id)}
+                className="text-red-600 text-sm font-semibold"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {filteredProducts.length === 0 && (
+          <div className="p-6 text-center text-gray-500">
+            No products found
+          </div>
+        )}
       </div>
     </div>
   );
