@@ -18,6 +18,7 @@ import Orders from "../pages/admin_pages/Orders/Orders";
 import Subscribers from "../pages/admin_pages/Subscribers/Subscribers";
 import Users from "../pages/admin_pages/Users/Users";
 import UpdateFood from "../pages/admin_pages/UpdatFoodMenu/UpdateFood";
+import ProductPage from "../components/ProductPage";
 
 const Route = createBrowserRouter([
   {
@@ -29,7 +30,8 @@ const Route = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
       { path: "login", element: <LogIn /> },
-      { path: "register", element: <Register /> }
+      { path: "register", element: <Register /> },
+      { path: "/food-menu/:id", loader: ({params}) => fetch(`http://localhost:5000/food-menu/${params.id}`) ,element: <ProductPage /> },
     ]
   },
   {
