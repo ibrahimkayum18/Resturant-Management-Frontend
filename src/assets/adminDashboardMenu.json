@@ -33,10 +33,5 @@
     "label": "Subscribers",
     "icon": "bell",
     "path": "/dashboard/subscribers"
-  },
-  {
-    "label": "Users",
-    "icon": "user-cog",
-    "path": "/dashboard/users"
   }
 ]

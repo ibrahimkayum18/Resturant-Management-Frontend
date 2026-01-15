@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../Routes/AuthProvider";
+import { Link } from "react-router";
 
 const Cart = () => {
   const { user, loading } = useContext(AuthContext);
@@ -162,13 +163,14 @@ const Cart = () => {
                   <span>৳{formatPrice(total)}</span>
                 </div>
               </div>
-
-              <button
-                onClick={() => alert("Proceeding to checkout")}
+<Link to={'/checkout'}>
+ <button
                 className="mt-6 w-full py-3 bg-black text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition"
               >
                 Proceed to Checkout
               </button>
+</Link>
+             
             </div>
           </div>
         )}

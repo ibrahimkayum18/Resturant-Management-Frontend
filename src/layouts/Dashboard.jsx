@@ -1,9 +1,16 @@
-import { NavLink, Outlet } from "react-router";
-import { useState } from "react";
+import { Link, NavLink, Outlet } from "react-router";
+import { use, useState } from "react";
 import adminMenu from "../assets/adminDashboardMenu.json";
+import { FaHome } from "react-icons/fa";
+import { AuthContext } from "../Routes/AuthProvider";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {user, loading} = use(AuthContext);
+
+  if(loading){
+    return <p className="min-h-[70vh] text-3xl font-bold flex justify-center items-center">Loading...</p>
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -40,6 +47,7 @@ const Dashboard = () => {
             </button>
           </div>
 
+<div className="flex flex-col justify-between h-[80vh]">
           {/* MENU */}
           <nav className="px-4 py-6 space-y-1">
             {adminMenu.map((item, index) => (
@@ -65,6 +73,18 @@ const Dashboard = () => {
             ))}
           </nav>
 
+{/* Footer menu */}
+<div>
+    <div className="pl-5">
+      <Link className="flex gap-2 items-center" to={'/'}>  
+        <FaHome />
+        <p>Home</p>
+      </Link>
+    </div>
+</div>
+
+                    </div>
+
           {/* FOOTER */}
           <div className="absolute bottom-0 w-full px-6 py-4 border-t border-gray-800 text-xs text-gray-400">
             © {new Date().getFullYear()} Bengal Spicy Food
@@ -87,10 +107,13 @@ const Dashboard = () => {
 
             <div className="flex items-center gap-4">
               <span className="hidden md:block text-sm text-gray-600">
-                Admin
+                {user.displayName}
               </span>
               <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
-                👤
+                {
+                  user.photoURL ? <img src={user.photoURL} alt="" />  : "👤"
+                }
+                
               </div>
             </div>
           </header>

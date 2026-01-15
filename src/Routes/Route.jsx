@@ -20,6 +20,8 @@ import Users from "../pages/admin_pages/Users/Users";
 import UpdateFood from "../pages/admin_pages/UpdatFoodMenu/UpdateFood";
 import ProductPage from "../components/ProductPage";
 import Cart from "../pages/regular_pages/Cart/Cart";
+import Checkout from "../pages/regular_pages/Checkout/Checkout";
+import OrderDetails from "../components/OrderDetails";
 
 const Route = createBrowserRouter([
   {
@@ -48,8 +50,13 @@ const Route = createBrowserRouter([
       { path: "all_orders", element: <Orders /> },
       { path: "subscribers", element: <Subscribers /> },
       { path: "users", element: <Users /> },
-      { path: "food_menu/:id", element: <UpdateFood /> }
+      { path: "update/:id", loader: ({params}) => fetch(`http://localhost:5000/food-menu/${params.id}`) ,element: <UpdateFood /> },
+      { path: "all_orders/:id", loader: ({params}) => fetch(`http://localhost:5000/orders/${params.id}`) ,element: <OrderDetails /> }
     ]
+  },
+  {
+    path: '/checkout',
+    element: <Checkout />
   }
 ]);
 

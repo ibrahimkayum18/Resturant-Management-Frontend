@@ -132,7 +132,7 @@ export default function AddProduct() {
         images: [],
         variants: [],
       });
-    } catch (error) {
+    } catch (err) {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
