@@ -8,13 +8,17 @@ import { RxCross1 } from "react-icons/rx";
 import { AuthContext } from "../Routes/AuthProvider";
 import toast from "react-hot-toast";
 import { BsCart3 } from "react-icons/bs";
-import axios from "axios";
+// import axios from "axios";
+import useCartItems from "../hooks/useCartItems";
+import Loading from "./Loading";
 
 const NavBar = () => {
-  const [cartProducts, setCartProducts] = useState([]);
+  // const [cartProducts, setCartProducts] = useState([]);
   const [menuStatus, setMenuStatus] = useState(false);
   const navigate = useNavigate();
   const { logOut, user } = useContext(AuthContext);
+  const [cartItems, refetch, isLoading] = useCartItems()
+  console.log(cartItems)
 
   const handleLogOut = () => {
     logOut()
@@ -26,14 +30,18 @@ const NavBar = () => {
       });
   };
 
-  useEffect(() => {
-    if (user?.email) {
-      axios
-        .get(`http://localhost:5000/cart?email=${user.email}`)
-        .then((res) => setCartProducts(res.data))
-        .catch((err) => console.error(err.message));
-    }
-  }, [user]);
+  if(isLoading){
+    return <Loading />
+  }
+
+  // useEffect(() => {
+  //   if (user?.email) {
+  //     axios
+  //       .get(`http://localhost:5000/cart?email=${user.email}`)
+  //       .then((res) => setCartProducts(res.data))
+  //       .catch((err) => console.error(err.message));
+  //   }
+  // }, [user]);
 
   const navLinks = (
     <>
@@ -120,9 +128,9 @@ const NavBar = () => {
           <div className="">
             <Link className="relative" to={"/cart"}>
               <BsCart3 />
-              {cartProducts.length > 0 && (
+              {cartItems.length > 0 && (
                 <div className="text-[12px] bg-red-900 text-white w-5 h-5 flex justify-center items-center rounded-full absolute -top-2 -right-2">
-                  {cartProducts.length}
+                  {cartItems.length}
                 </div>
               )}
             </Link>

@@ -3,17 +3,19 @@ import { use } from "react";
 import { Link } from "react-router";
 import { AuthContext } from "../Routes/AuthProvider";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const ProductCard = ({item, loadingId, setLoadingId}) => {
 
   const {user} = use(AuthContext);
+  const axiosPublic = useAxiosPublic()
 
 
   const handleAddToCart = async () => {
   try {
     setLoadingId(item._id);
 
-    await axios.post("http://localhost:5000/cart", {
+    await axiosPublic.post("/cart", {
       productId: item._id,
       title: item.title,
       price: Number(item.basePrice),
@@ -25,6 +27,7 @@ const ProductCard = ({item, loadingId, setLoadingId}) => {
     });
 
     toast.success("Item added to cart ✅");
+    
   } catch (error) {
     console.error(error);
     toast.error("Failed to add to cart ❌");

@@ -4,19 +4,19 @@ import { use } from "react";
 import { AuthContext } from "../Routes/AuthProvider";
 
 
-const useAllCustomers = () => {
+const useAllProducts = () => {
   const {user} = use(AuthContext)
   const axiosPublic = useAxiosPublic()
-  const {data: allCustomers = [], refetch} = useQuery({
-    queryKey: ["myAllCustomers", user.email],
+  const {data: allProducts = [], refetch} = useQuery({
+    queryKey: ["myAllProducts", user.email],
     queryFn: async() => {
-      const res = await axiosPublic.get(`/users`)
+      const res = await axiosPublic.get(`/food-menu`)
       return res.data;
     }
   })
 
-  return [allCustomers, refetch]
+  return [allProducts, refetch];
 
 };
 
-export default useAllCustomers;
+export default useAllProducts;
