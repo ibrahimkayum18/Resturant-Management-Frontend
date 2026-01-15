@@ -1,9 +1,10 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 export default function AddProduct() {
   const [loading, setLoading] = useState(false);
+  const axiosPublic = useAxiosPublic()
 
   const [product, setProduct] = useState({
     title: "",
@@ -29,7 +30,7 @@ export default function AddProduct() {
       const data = await res.json();
       return data.data.url;
     } catch (error) {
-      toast.error("Image upload failed");
+      toast.error("Image upload failed",error.message);
       return null;
     }
   };
@@ -119,7 +120,7 @@ export default function AddProduct() {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:5000/food-menu", product);
+      await axiosPublic.post("/food-menu", product);
       toast.success("Product uploaded successfully");
 
       setProduct({
@@ -133,7 +134,7 @@ export default function AddProduct() {
         variants: [],
       });
     } catch (err) {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong", err.message);
     } finally {
       setLoading(false);
     }

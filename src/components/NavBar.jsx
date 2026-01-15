@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from "react-router";
 import menuData from "../assets/main_menu.json";
 import logo from "./../assets/logo.png";
 import { MdOutlineAccountCircle } from "react-icons/md";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IoMenuOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import { AuthContext } from "../Routes/AuthProvider";
@@ -17,7 +17,7 @@ const NavBar = () => {
   const [menuStatus, setMenuStatus] = useState(false);
   const navigate = useNavigate();
   const { logOut, user } = useContext(AuthContext);
-  const [cartItems, refetch, isLoading] = useCartItems()
+  const [cartItems] = useCartItems()
   console.log(cartItems)
 
   const handleLogOut = () => {
@@ -30,18 +30,6 @@ const NavBar = () => {
       });
   };
 
-  if(isLoading){
-    return <Loading />
-  }
-
-  // useEffect(() => {
-  //   if (user?.email) {
-  //     axios
-  //       .get(`http://localhost:5000/cart?email=${user.email}`)
-  //       .then((res) => setCartProducts(res.data))
-  //       .catch((err) => console.error(err.message));
-  //   }
-  // }, [user]);
 
   const navLinks = (
     <>

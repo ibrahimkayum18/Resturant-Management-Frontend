@@ -7,7 +7,7 @@ import { AuthContext } from "../Routes/AuthProvider";
 const useAllProducts = () => {
   const {user} = use(AuthContext)
   const axiosPublic = useAxiosPublic()
-  const {data: allProducts = [], refetch} = useQuery({
+  const {data: allProducts = [], refetch, isLoading} = useQuery({
     queryKey: ["myAllProducts", user.email],
     queryFn: async() => {
       const res = await axiosPublic.get(`/food-menu`)
@@ -15,7 +15,7 @@ const useAllProducts = () => {
     }
   })
 
-  return [allProducts, refetch];
+  return [allProducts, refetch, isLoading];
 
 };
 

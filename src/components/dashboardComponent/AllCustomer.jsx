@@ -1,5 +1,4 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+
 import {
   PieChart,
   Pie,
@@ -12,22 +11,18 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import useAllCustomers from "../../hooks/useAllCustomers";
 
 const COLORS = ["#0088FE"];
 
 const AllCustomer = () => {
-  const [storeUser, setStoreUser] = useState([]);
+  const [allCustomers] = useAllCustomers()
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/users")
-      .then((res) => setStoreUser(res.data))
-      .catch((err) => console.log(err.message));
-  }, []);
+
 
   /* ---------------- PIE CHART DATA ---------------- */
-  const customerCount = storeUser.filter(
-    (user) => user.role === "customer"
+  const customerCount = allCustomers.filter(
+    (user) => user?.role === "customer"
   ).length;
 
   const pieData = [{ name: "Total Customers", value: customerCount }];
@@ -35,7 +30,7 @@ const AllCustomer = () => {
   /* ---------------- BAR CHART DATA (GROWTH) ---------------- */
   const growthMap = {};
 
-  storeUser.forEach((user) => {
+  allCustomers.forEach((user) => {
     if (user.activity?.createdAt) {
       const date = new Date(user.activity.createdAt)
         .toISOString()
