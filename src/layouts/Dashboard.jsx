@@ -3,6 +3,7 @@ import { use, useState } from "react";
 import adminMenu from "../assets/adminDashboardMenu.json";
 import { FaHome } from "react-icons/fa";
 import { AuthContext } from "../Routes/AuthProvider";
+import logo from './../assets/logo.png'
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +38,7 @@ const Dashboard = () => {
           {/* LOGO */}
           <div className="h-16 flex items-center justify-between px-6">
             <h1 className="text-xl font-bold text-white tracking-wide">
-              Bengal Admin
+              Dashboard
             </h1>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -94,7 +95,7 @@ const Dashboard = () => {
         {/* MAIN CONTENT */}
         <div className="flex-1 flex flex-col min-h-screen">
           {/* HEADER */}
-          <header className="sticky top-0 z-30 h-16 bg-[#f5f5f5] shadow-sm flex items-center justify-between px-6">
+          <header className="sticky top-0 z-30 h-18 bg-[#f5f5f5] shadow-sm flex items-center justify-between px-6">
             <div className="flex items-center gap-4">
               <button
                 className="lg:hidden text-gray-700"
@@ -102,7 +103,11 @@ const Dashboard = () => {
               >
                 ☰
               </button>
-              <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
+              <h2 className="text-lg font-semibold text-gray-800">
+                <Link to={'/'}>
+                  <img className="w-32" src={logo} alt="" />
+                </Link>
+              </h2>
             </div>
 
             <div className="flex items-center gap-4">

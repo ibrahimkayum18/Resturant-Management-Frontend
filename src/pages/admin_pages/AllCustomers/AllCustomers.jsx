@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const AllCustomers = () => {
   const [customers, setCustomers] = useState([]);
@@ -10,10 +10,9 @@ const AllCustomers = () => {
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // 🔹 Status badge (same colors as before)
+  /* ================= STATUS BADGE ================= */
   const StatusBadge = ({ status }) => {
     const isActive = status === "active";
-
     return (
       <div className="flex items-center gap-2 capitalize">
         <span
@@ -21,13 +20,12 @@ const AllCustomers = () => {
             isActive ? "bg-green-700" : "bg-red-700"
           }`}
         />
-        <span className="text-sm text-black">
-          {status || "N/A"}
-        </span>
+        <span className="text-sm">{status || "N/A"}</span>
       </div>
     );
   };
 
+  /* ================= FETCH ================= */
   const fetchCustomers = async () => {
     try {
       const res = await axios.get("http://localhost:5000/users");
@@ -39,6 +37,11 @@ const AllCustomers = () => {
     }
   };
 
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  /* ================= ACTIONS ================= */
   const handleDeleteCustomer = async (id) => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
     await axios.delete(`http://localhost:5000/users/${id}`);
@@ -50,52 +53,97 @@ const AllCustomers = () => {
     fetchCustomers();
   };
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
+  /* ================= FILTER LOGIC ================= */
+  const filteredCustomers = useMemo(() => {
+    return customers.filter((c) => {
+      const matchesSearch =
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.email.toLowerCase().includes(search.toLowerCase());
 
-  // 🔎 Filter logic
-  const filteredCustomers = customers.filter((c) => {
-    const matchesSearch =
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.email.toLowerCase().includes(search.toLowerCase());
+      const matchesRole = roleFilter === "all" || c.role === roleFilter;
+      const matchesStatus =
+        statusFilter === "all" || c?.activity?.status === statusFilter;
 
-    const matchesRole = roleFilter === "all" || c.role === roleFilter;
-    const matchesStatus =
-      statusFilter === "all" || c?.activity?.status === statusFilter;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [customers, search, roleFilter, statusFilter]);
 
-    return matchesSearch && matchesRole && matchesStatus;
-  });
+  /* ================= EXPORT CSV ================= */
+  const exportToCSV = () => {
+    if (!filteredCustomers.length) {
+      alert("No data to export");
+      return;
+    }
+
+    const headers = [
+      "Name",
+      "Email",
+      "Role",
+      "Status",
+      "Last Login",
+    ];
+
+    const rows = filteredCustomers.map((c) => [
+      c.name,
+      c.email,
+      c.role,
+      c?.activity?.status || "N/A",
+      c?.activity?.lastLogin
+        ? new Date(c.activity.lastLogin).toLocaleString()
+        : "Never",
+    ]);
+
+    const csv =
+      "data:text/csv;charset=utf-8," +
+      [headers, ...rows].map((r) => r.join(",")).join("\n");
+
+    const link = document.createElement("a");
+    link.href = encodeURI(csv);
+    link.download = "customers.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   if (loading) {
     return (
-      <div className="p-6 text-center font-semibold text-black">
+      <div className="p-6 text-center font-semibold">
         Loading customers...
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 text-black max-w-7xl mx-auto ">
-      <h2 className="text-3xl font-bold mb-4">
-        All Customers
-      </h2>
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+        <h2 className="text-2xl sm:text-3xl font-bold">
+          All Customers
+        </h2>
 
-      {/* 🔍 SEARCH + FILTER BAR */}
-      <div className="sticky top-0 z-20 bg-gray-50 mb-5">
-        <div className="flex flex-wrap md:flex-nowrap gap-3 items-center p-3 border border-gray-200 rounded-xl bg-white">
+        <button
+          onClick={exportToCSV}
+          className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition cursor-pointer"
+        >
+          Export CSV
+        </button>
+      </div>
+
+      {/* FILTER BAR */}
+      <div className="sticky top-0 z-20 bg-white mb-5">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-center p-3 border border-gray-200 rounded-xl">
           <input
             type="text"
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 min-w-[200px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full sm:flex-1 border border-gray-300 rounded-lg px-3 py-2"
           />
 
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 min-w-[140px]"
+            className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2"
           >
             <option value="all">All Roles</option>
             <option value="customer">Customer</option>
@@ -106,7 +154,7 @@ const AllCustomers = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 min-w-[140px]"
+            className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -115,7 +163,7 @@ const AllCustomers = () => {
         </div>
       </div>
 
-      {/* ================= DESKTOP TABLE ================= */}
+      {/* DESKTOP TABLE */}
       <div className="hidden md:block bg-white rounded-xl shadow overflow-hidden">
         <table className="min-w-full">
           <thead className="bg-gray-100">
@@ -130,24 +178,15 @@ const AllCustomers = () => {
           </thead>
 
           <tbody>
-            {filteredCustomers.map((customer) => (
-              <tr
-                key={customer._id}
-                className="border-t border-gray-200 hover:bg-gray-50"
-              >
-                <td className="px-4 py-3 font-medium">
-                  {customer.name}
-                </td>
-
-                <td className="px-4 py-3 text-gray-600">
-                  {customer.email}
-                </td>
-
+            {filteredCustomers.map((c) => (
+              <tr key={c._id} className="border-t hover:bg-gray-50">
+                <td className="px-4 py-3 font-medium">{c.name}</td>
+                <td className="px-4 py-3">{c.email}</td>
                 <td className="px-4 py-3">
                   <select
-                    value={customer.role}
+                    value={c.role}
                     onChange={(e) =>
-                      handleRoleChange(customer._id, e.target.value)
+                      handleRoleChange(c._id, e.target.value)
                     }
                     className="border border-gray-300 rounded px-2 py-1"
                   >
@@ -156,22 +195,17 @@ const AllCustomers = () => {
                     <option value="guest">Guest</option>
                   </select>
                 </td>
-
                 <td className="px-4 py-3">
-                  <StatusBadge status={customer?.activity?.status} />
+                  <StatusBadge status={c?.activity?.status} />
                 </td>
-
                 <td className="px-4 py-3 text-gray-500">
-                  {customer?.activity?.lastLogin
-                    ? new Date(
-                        customer.activity.lastLogin
-                      ).toLocaleString()
+                  {c?.activity?.lastLogin
+                    ? new Date(c.activity.lastLogin).toLocaleString()
                     : "Never"}
                 </td>
-
                 <td className="px-4 py-3 text-center">
                   <button
-                    onClick={() => handleDeleteCustomer(customer._id)}
+                    onClick={() => handleDeleteCustomer(c._id)}
                     className="text-red-600 hover:underline"
                   >
                     Delete
@@ -183,29 +217,20 @@ const AllCustomers = () => {
         </table>
       </div>
 
-      {/* ================= MOBILE COMPACT LIST ================= */}
-      <div className="md:hidden bg-white rounded-xl shadow divide-y divide-gray-200">
-        {filteredCustomers.map((customer) => (
-          <div
-            key={customer._id}
-            className="p-4 flex justify-between items-center gap-3"
-          >
+      {/* MOBILE LIST */}
+      <div className="md:hidden bg-white rounded-xl shadow divide-y">
+        {filteredCustomers.map((c) => (
+          <div key={c._id} className="p-4 flex justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold truncate">
-                {customer.name}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                {customer.email}
-              </p>
-              <StatusBadge status={customer?.activity?.status} />
+              <p className="font-semibold truncate">{c.name}</p>
+              <p className="text-xs text-gray-500 truncate">{c.email}</p>
+              <StatusBadge status={c?.activity?.status} />
             </div>
 
             <div className="flex items-center gap-2">
               <select
-                value={customer.role}
-                onChange={(e) =>
-                  handleRoleChange(customer._id, e.target.value)
-                }
+                value={c.role}
+                onChange={(e) => handleRoleChange(c._id, e.target.value)}
                 className="border border-gray-300 rounded px-2 py-1 text-sm"
               >
                 <option value="customer">Customer</option>
@@ -214,7 +239,7 @@ const AllCustomers = () => {
               </select>
 
               <button
-                onClick={() => handleDeleteCustomer(customer._id)}
+                onClick={() => handleDeleteCustomer(c._id)}
                 className="text-red-600 text-lg"
               >
                 ✕
