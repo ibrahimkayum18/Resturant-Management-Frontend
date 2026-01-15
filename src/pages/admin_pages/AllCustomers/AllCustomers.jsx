@@ -1,9 +1,10 @@
-import axios from "axios";
 import { useEffect, useState, useMemo } from "react";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const AllCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axiosPublic = useAxiosPublic();
 
   // UI states
   const [search, setSearch] = useState("");
@@ -28,7 +29,7 @@ const AllCustomers = () => {
   /* ================= FETCH ================= */
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/users");
+      const res = await axiosPublic.get("/users");
       setCustomers(res.data);
     } catch (error) {
       console.error("Failed to fetch customers", error);
@@ -44,12 +45,12 @@ const AllCustomers = () => {
   /* ================= ACTIONS ================= */
   const handleDeleteCustomer = async (id) => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
-    await axios.delete(`http://localhost:5000/users/${id}`);
+    await axiosPublic.delete(`/users/${id}`);
     fetchCustomers();
   };
 
   const handleRoleChange = async (id, role) => {
-    await axios.patch(`http://localhost:5000/users/role/${id}`, { role });
+    await axiosPublic.patch(`/users/role/${id}`, { role });
     fetchCustomers();
   };
 

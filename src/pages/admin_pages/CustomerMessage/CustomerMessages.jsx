@@ -1,6 +1,7 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const CustomerMessages = () => {
   const [messages, setMessages] = useState([]);
@@ -8,6 +9,7 @@ const CustomerMessages = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const axiosPublic = useAxiosPublic();
 
   // 🔹 Status Badge (same style as AllCustomers)
   const StatusBadge = ({ status }) => {
@@ -29,7 +31,7 @@ const CustomerMessages = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/contact");
+        const res = await axiosPublic.get("/api/contact");
         const sorted = res.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -41,7 +43,7 @@ const CustomerMessages = () => {
       }
     };
     fetchMessages();
-  }, []);
+  }, [axiosPublic]);
 
   // Open message
   const openMessage = async (msg) => {
@@ -49,7 +51,7 @@ const CustomerMessages = () => {
     setShowReply(false);
 
     if (msg.status === "Unread") {
-      await axios.put(`http://localhost:5000/api/contact/${msg._id}`, {
+      await axiosPublic.put(`/api/contact/${msg._id}`, {
         status: "Read",
       });
 
@@ -69,7 +71,7 @@ const CustomerMessages = () => {
 
   const deleteMessage = async (id) => {
     if (!window.confirm("Delete this message?")) return;
-    await axios.delete(`http://localhost:5000/api/contact/${id}`);
+    await axiosPublic.delete(`/api/contact/${id}`);
     setMessages((prev) => prev.filter((m) => m._id !== id));
     closeModal();
     toast.success("Message deleted");
@@ -78,7 +80,7 @@ const CustomerMessages = () => {
   const sendReply = async () => {
     if (!replyText.trim()) return toast.error("Reply cannot be empty");
 
-    await axios.post("http://localhost:5000/api/contact/reply", {
+    await axiosPublic.post("/api/contact/reply", {
       firstName: selectedMessage.firstName,
       email: selectedMessage.email,
       subject: "Reply to your message",

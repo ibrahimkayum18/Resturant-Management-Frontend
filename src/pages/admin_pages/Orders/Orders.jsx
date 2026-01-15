@@ -1,12 +1,13 @@
-import axios from "axios";
+
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const axiosPublic = useAxiosPublic();
   const [searchTxn, setSearchTxn] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
@@ -15,7 +16,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/orders");
+      const res = await axiosPublic.get("/orders");
       setOrders(res.data);
     } catch {
       toast.error("Failed to load orders");
@@ -103,7 +104,7 @@ const Orders = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:5000/orders/${id}`, {
+      await axiosPublic.patch(`/orders/${id}`, {
         orderStatus: status,
       });
       toast.success("Order status updated");
@@ -117,7 +118,7 @@ const Orders = () => {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/orders/${id}`);
+      await axiosPublic.delete(`/orders/${id}`);
       toast.success("Order deleted");
       fetchOrders();
     } catch {

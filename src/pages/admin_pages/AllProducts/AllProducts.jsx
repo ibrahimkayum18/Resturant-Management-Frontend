@@ -1,10 +1,12 @@
-import axios from "axios";
+  import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axiosPublic = useAxiosPublic();
 
   // UI states
   const [search, setSearch] = useState("");
@@ -13,7 +15,7 @@ const AllProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/food-menu");
+      const res = await axiosPublic.get("/food-menu");
       setProducts(res.data);
     } catch (error) {
       console.error("Failed to fetch products", error.message);
@@ -22,11 +24,52 @@ const AllProducts = () => {
     }
   };
 
-  const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-    await axios.delete(`http://localhost:5000/food-menu/${id}`);
-    fetchProducts();
-  };
+
+
+const handleDeleteProduct = async (id) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This product will be permanently deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const res = await axiosPublic.delete(`/food-menu/${id}`);
+
+    if (res?.data?.deletedCount === 1) {
+      await fetchProducts();
+
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "The product has been removed.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Not deleted",
+        text: "Product could not be deleted.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Something went wrong. Please try again.",
+    });
+  }
+};
+
 
   useEffect(() => {
     fetchProducts();
