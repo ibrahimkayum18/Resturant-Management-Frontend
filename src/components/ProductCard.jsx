@@ -4,37 +4,51 @@ import { Link } from "react-router";
 import { AuthContext } from "../Routes/AuthProvider";
 import toast from "react-hot-toast";
 import useAxiosPublic from "../hooks/useAxiosPublic";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const ProductCard = ({item, loadingId, setLoadingId}) => {
 
   const {user} = use(AuthContext);
-  const axiosPublic = useAxiosPublic()
+  const axiosPublic = useAxiosPublic();
+  const queryClient = useQueryClient()
 
+  const addToCartMutation = useMutation({
+  mutationFn: (cartItem) =>
+    axiosPublic.post("/cart", cartItem),
 
-  const handleAddToCart = async () => {
-  try {
-    setLoadingId(item._id);
-
-    await axiosPublic.post("/cart", {
-      productId: item._id,
-      title: item.title,
-      price: Number(item.basePrice),
-      image: item.images?.[0],
-      quantity: 1,
-      customerEmail: user.email,
-      customerName: user.displayName,
-      createdAt: new Date()
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: ["myCartItems", user.email],
     });
 
     toast.success("Item added to cart ✅");
-    
-  } catch (error) {
-    console.error(error);
+  },
+
+  onError: () => {
     toast.error("Failed to add to cart ❌");
-  } finally {
+  },
+
+  onSettled: () => {
     setLoadingId(null);
-  }
+  },
+});
+
+
+  const handleAddToCart = () => {
+  setLoadingId(item._id);
+
+  addToCartMutation.mutate({
+    productId: item._id,
+    title: item.title,
+    price: Number(item.basePrice),
+    image: item.images?.[0],
+    quantity: 1,
+    customerEmail: user.email,
+    customerName: user.displayName,
+    createdAt: new Date(),
+  });
 };
+
 
 
   return (

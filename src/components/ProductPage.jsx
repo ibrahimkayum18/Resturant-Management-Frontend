@@ -1,11 +1,16 @@
 import { useLoaderData } from "react-router";
-import { useState } from "react";
-import axios from "axios";
+import { use, useState } from "react";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../hooks/useAxiosPublic";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AuthContext } from "../Routes/AuthProvider";
 
 const ProductPage = () => {
-  const product = useLoaderData();
 
+  const {user} = use(AuthContext)
+  const product = useLoaderData();
+  const axiosPublic = useAxiosPublic();
+  const queryClient = useQueryClient();
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -25,27 +30,42 @@ const ProductPage = () => {
     }));
   };
 
-  const handleAddToCart = async () => {
-    try {
-      setLoading(true);
+  const addToCartMutation = useMutation({
+  mutationFn: (cartItem) =>
+    axiosPublic.post("/cart", cartItem),
 
-      await axios.post("http://localhost:5000/cart", {
-        productId: product._id,
-        title: product.title,
-        price: Number(product.basePrice),
-        image: selectedImage,
-        quantity,
-        variants: selectedVariants,
-      });
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: ["myCartItems", user?.email],
+    });
 
-      toast.success("Item added to cart");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add to cart");
-    } finally {
-      setLoading(false);
+    toast.success("Item added to cart");
+  },
+
+  onError: () => {
+    toast.error("Failed to add to cart");
+  },
+});
+
+  const handleAddToCart = () => {
+  setLoading(true);
+
+  addToCartMutation.mutate(
+    {
+      productId: product._id,
+      title: product.title,
+      price: Number(product.basePrice),
+      image: selectedImage,
+      quantity,
+      variants: selectedVariants,
+      customerEmail: user.email,
+    },
+    {
+      onSettled: () => setLoading(false),
     }
-  };
+  );
+};
+
 
   return (
     <div className="bg-white py-12">
