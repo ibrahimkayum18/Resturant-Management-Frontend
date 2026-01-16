@@ -6,11 +6,14 @@ import { auth } from "../../../../firebase.config";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const Register = () => {
 
   const { createUser, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
+  
+  const axiosPublic = useAxiosPublic();
 
   
 
@@ -46,7 +49,7 @@ const Register = () => {
         email,
       };
 
-      const res = await axios.post("http://localhost:5000/users", userInfo);
+      const res = await axiosPublic.post("/users", userInfo);
       if (res.data.success) {
         toast.success("User Created Successfully");
         logOut();

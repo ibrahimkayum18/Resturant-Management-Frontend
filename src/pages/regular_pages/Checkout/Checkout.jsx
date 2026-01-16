@@ -1,12 +1,14 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../../../Routes/AuthProvider";
-import axios from "axios";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const Checkout = () => {
   const { user } = use(AuthContext);
   const [cartProducts, setCartProducts] = useState([]);
   const [processing, setProcessing] = useState(false);
+  
+  const axiosPublic = useAxiosPublic();
 
   const [form, setForm] = useState({
     email: user?.email || "",
@@ -25,12 +27,12 @@ const Checkout = () => {
   /* ================= LOAD CART ================= */
   useEffect(() => {
     if (user?.email) {
-      axios
-        .get(`http://localhost:5000/cart?email=${user.email}`)
+      axiosPublic
+        .get(`/cart?email=${user.email}`)
         .then((res) => setCartProducts(res.data))
         .catch(() => toast.error("Failed to load cart"));
     }
-  }, [user]);
+  }, [user, axiosPublic]);
 
   /* ================= CALCULATIONS ================= */
   const subtotal = useMemo(
@@ -78,7 +80,7 @@ const Checkout = () => {
         total,
       };
 
-      await axios.post("http://localhost:5000/checkout", order);
+      await axiosPublic.post("/checkout", order);
 
       toast.success("Order placed successfully");
       setCartProducts([]);

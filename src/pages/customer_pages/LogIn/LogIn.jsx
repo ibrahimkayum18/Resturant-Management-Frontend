@@ -2,11 +2,12 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../../Routes/AuthProvider";
 import toast from "react-hot-toast";
-import axios from "axios";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const LogIn = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -29,7 +30,7 @@ const handleSubmit = (e) => {
   login(email, password)
     .then(async (result) => {
       // 🔹 Call backend to update last login activity
-      await axios.post("http://localhost:5000/users", {
+      await axiosPublic.post("/users", {
         email,
         name: result.user?.displayName || "Customer",
       });

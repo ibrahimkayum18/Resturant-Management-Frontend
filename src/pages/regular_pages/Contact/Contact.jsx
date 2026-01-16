@@ -1,7 +1,9 @@
 import { useState } from "react";
-import axios from "axios";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const Contact = () => {
+  
+  const axiosPublic = useAxiosPublic();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,8 +29,8 @@ const Contact = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/contact",
+      const res = await axiosPublic.post(
+        "/api/contact",
         formData
       );
 

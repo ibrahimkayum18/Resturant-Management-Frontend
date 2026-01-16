@@ -1,12 +1,14 @@
-import axios from "axios";
+
 import { useLoaderData, useNavigate } from "react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const UpdateFood = () => {
   const loadedProduct = useLoaderData();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const axiosPublic = useAxiosPublic();
 
   // ✅ Normalize variants & options (important)
   const normalizedVariants =
@@ -143,8 +145,8 @@ const UpdateFood = () => {
 
     try {
       setLoading(true);
-      await axios.patch(
-        `http://localhost:5000/update/${loadedProduct._id}`,
+      await axiosPublic.patch(
+        `/update/${loadedProduct._id}`,
         product
       );
       toast.success("Product updated successfully");
