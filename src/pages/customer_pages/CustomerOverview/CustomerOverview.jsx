@@ -3,7 +3,7 @@
 const CustomerOverview = () => {
     return (
         <div>
-            Customer Overview
+            This is Customer Overview page
         </div>
     );
 };
