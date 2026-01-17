@@ -22,6 +22,7 @@ import ProductPage from "../components/ProductPage";
 import Cart from "../pages/regular_pages/Cart/Cart";
 import Checkout from "../pages/regular_pages/Checkout/Checkout";
 import OrderDetails from "../components/OrderDetails";
+import Payments from "../pages/regular_pages/Checkout/Payments";
 
 const Route = createBrowserRouter([
   {
@@ -56,7 +57,7 @@ const Route = createBrowserRouter([
   },
   {
     path: '/checkout',
-    element: <Checkout />
+    element: <Payments />
   }
 ]);
 
