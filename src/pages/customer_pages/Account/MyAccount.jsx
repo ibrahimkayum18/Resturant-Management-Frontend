@@ -3,7 +3,7 @@
 const MyAccount = () => {
     return (
         <div>
-            My Accounts
+            This is customer account page
         </div>
     );
 };
