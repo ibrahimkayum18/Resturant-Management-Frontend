@@ -3,7 +3,7 @@
 const CustomerOrder = () => {
     return (
         <div>
-            My all orders
+            Customers individual page
         </div>
     );
 };
