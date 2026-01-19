@@ -8,9 +8,9 @@ const useAllProducts = () => {
   const {user} = use(AuthContext)
   const axiosPublic = useAxiosPublic()
   const {data: allProducts = [], refetch, isLoading} = useQuery({
-    queryKey: ["myAllProducts", user.email],
+    queryKey: ["myAllProducts", user?.email],
     queryFn: async() => {
-      const res = await axiosPublic.get(`/food-menu`)
+      const res = await axiosPublic.get(`/food-menu`);
       return res.data;
     }
   })
