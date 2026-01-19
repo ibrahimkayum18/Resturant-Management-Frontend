@@ -1,6 +1,6 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import CheckoutForm from "./CheckoutForm";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import { AuthContext } from "../../../Routes/AuthProvider";
@@ -11,25 +11,28 @@ const stripePromise = loadStripe(
 );
 
 const Payments = () => {
-  const [clientSecret, setClientSecret] = useState("");
   const axiosPublic = useAxiosPublic();
-  const {user} = use(AuthContext)
+  const { user } = use(AuthContext);
+
+  const [clientSecret, setClientSecret] = useState("");
   const [cartProducts, setCartProducts] = useState([]);
 
   useEffect(() => {
+    if (!user?.email) return;
+
     axiosPublic
-      .post("/create-payment-intent", {
-        amount: 50, // REQUIRED (example: $50)
+      .get(`/cart?email=${user.email}`)
+      .then((res) => {
+        setCartProducts(res.data);
+
+        return axiosPublic.post("/create-payment-intent", {
+          cartItems: res.data,
+        });
       })
-      .then(res => {
+      .then((res) => {
         setClientSecret(res.data.clientSecret);
       })
-      .catch(console.error);
-
-      axiosPublic
-        .get(`/cart?email=${user?.email}`)
-        .then((res) => setCartProducts(res.data))
-        .catch(() => toast.error("Failed to load cart"));
+      .catch(() => toast.error("Failed to prepare payment"));
   }, [axiosPublic, user?.email]);
 
   if (!clientSecret) {
@@ -42,7 +45,10 @@ const Payments = () => {
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <CheckoutForm clientSecret={clientSecret} cartProducts={cartProducts}/>
+      <CheckoutForm
+        clientSecret={clientSecret}
+        cartProducts={cartProducts}
+      />
     </Elements>
   );
 };
