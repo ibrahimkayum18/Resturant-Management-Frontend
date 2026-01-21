@@ -62,6 +62,8 @@ const Cart = () => {
   const shipping = subtotal > 0 ? 120 : 0;
   const total = subtotal + shipping;
 
+  console.log(total)
+
   /* ================= LOADING ================= */
 
   if (loading || isLoading) {

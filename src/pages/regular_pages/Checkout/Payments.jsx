@@ -7,7 +7,7 @@ import { AuthContext } from "../../../Routes/AuthProvider";
 import toast from "react-hot-toast";
 
 const stripePromise = loadStripe(
-  "pk_test_51OJLNXJfbPWZcZjMbtZazfhkcWjacEkh0ciu50mxA7FyvN6zbQmWLQsArVzK3Y3jOCZmwbYm2Su0InaBkksIyNKp00ofECVZXE"
+  "pk_test_51OJLNXJfbPWZcZjMbtZazfhkcWjacEkh0ciu50mxA7FyvN6zbQmWLQsArVzK3Y3jOCZmwbYm2Su0InaBkksIyNKp00ofECVZXE",
 );
 
 const Payments = () => {
@@ -17,6 +17,8 @@ const Payments = () => {
   const [clientSecret, setClientSecret] = useState("");
   const [cartProducts, setCartProducts] = useState([]);
 
+  console.log("Client secret", clientSecret);
+
   useEffect(() => {
     if (!user?.email) return;
 
@@ -25,8 +27,13 @@ const Payments = () => {
       .then((res) => {
         setCartProducts(res.data);
 
+        const total = res.data.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+
         return axiosPublic.post("/create-payment-intent", {
-          cartItems: res.data,
+          amount: total, // send the total to backend
         });
       })
       .then((res) => {
@@ -34,6 +41,8 @@ const Payments = () => {
       })
       .catch(() => toast.error("Failed to prepare payment"));
   }, [axiosPublic, user?.email]);
+
+  console.log(clientSecret);
 
   if (!clientSecret) {
     return (
@@ -45,10 +54,7 @@ const Payments = () => {
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <CheckoutForm
-        clientSecret={clientSecret}
-        cartProducts={cartProducts}
-      />
+      <CheckoutForm clientSecret={clientSecret} cartProducts={cartProducts} />
     </Elements>
   );
 };
