@@ -2,11 +2,13 @@ import { use, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../../../Routes/AuthProvider";
 import toast from "react-hot-toast";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
+import { useNavigate } from "react-router";
 
 const Checkout = () => {
   const { user } = use(AuthContext);
   const [cartProducts, setCartProducts] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const navigate = useNavigate();
   
   const axiosPublic = useAxiosPublic();
 
@@ -50,46 +52,48 @@ const Checkout = () => {
 
   /* ================= SUBMIT ================= */
   const handleCheckout = async () => {
-    if (!form.phone || !form.address || !form.city) {
-      return toast.error("Please complete shipping details");
-    }
+  if (!form.phone || !form.address || !form.city) {
+    return toast.error("Please complete shipping details");
+  }
 
-    if (
-      !form.cardNumber ||
-      !form.expiry ||
-      !form.cvv ||
-      !form.cardName
-    ) {
-      return toast.error("Enter valid card details");
-    }
+  if (!form.cardNumber || !form.expiry || !form.cvv || !form.cardName) {
+    return toast.error("Enter valid card details");
+  }
 
-    try {
-      setProcessing(true);
+  try {
+    setProcessing(true);
 
-      const order = {
-        customerEmail: form.email,
-        customerName: form.name,
-        phone: form.phone,
-        address: form.address,
-        city: form.city,
-        postalCode: form.postalCode,
-        paymentMethod: "card",
-        items: cartProducts,
-        subtotal,
-        shipping,
-        total,
-      };
+    const order = {
+      customerEmail: form.email,
+      customerName: form.name,
+      phone: form.phone,
+      address: form.address,
+      city: form.city,
+      postalCode: form.postalCode,
+      paymentMethod: "card",
+      items: cartProducts,
+      subtotal,
+      shipping,
+      total,
+    };
 
-      await axiosPublic.post("/checkout", order);
+    const response = await axiosPublic.post("/checkout", order);
 
-      toast.success("Order placed successfully");
-      setCartProducts([]);
-    } catch {
-      toast.error("Checkout failed");
-    } finally {
-      setProcessing(false);
-    }
-  };
+    console.log("Checkout response:", response.data);
+
+    toast.success("Order placed successfully");
+    setCartProducts([]);
+
+    // Navigate safely
+    navigate("/");
+  } catch (err) {
+    console.error("Checkout error:", err.response?.data || err.message);
+    toast.error("Checkout failed");
+  } finally {
+    setProcessing(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-black">
