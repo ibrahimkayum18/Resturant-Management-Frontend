@@ -8,6 +8,7 @@ import AuthProvider from "./Routes/AuthProvider.jsx";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+//Query client
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
